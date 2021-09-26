@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,8 @@ import pl.sda.springdemo.dto.OfferDto;
 import pl.sda.springdemo.mapper.OffersMapper;
 import pl.sda.springdemo.repository.OffersRepository;
 import pl.sda.springdemo.service.OffersService;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/offers")
@@ -30,13 +33,18 @@ public class OffersController {
     @GetMapping("/form")    //== @RequestMapping(method = RequestMethod.GET)
     public String showForm(Model model) {
         model.addAttribute("mainCategoriesToSubcategoriesMap", offersService.getMainCategoriesDisplayNamesToSubcategoriesMap());
-        model.addAttribute("offer", new OfferDto());   //bindowane przez formularz
+        model.addAttribute("offerDto", new OfferDto());   //bindowane przez formularz
 
-        return "/offers/form2";  //docelowo /offers/form2
+        return "/offers/form";
     }
 
     @PostMapping    //w tym przypadku path to po prostu /offers
-    public String addOffer(OfferDto offerDto) {
+    public String addOffer(@Valid OfferDto offerDto, Errors errors, Model model) {
+        if(errors.hasErrors()) {
+            model.addAttribute("mainCategoriesToSubcategoriesMap", offersService.getMainCategoriesDisplayNamesToSubcategoriesMap());    //po co to? a dlaczego nie trzeba ustawiać 'offerDto'?
+            return "/offers/form";
+        }
+
         var offer = offersMapper.mapFromDtoToDomain(offerDto);
         offer = offersRepository.save(offer);
 

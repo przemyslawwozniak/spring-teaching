@@ -1,88 +1,105 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Nowe ogłoszenie | OLO</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Nowe ogłoszenie | OLO</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style>
+    .validation-error {
+      color: red
+    }
+  </style>
 </head>
+<body>
+<h1>Dodaj ogłoszenie</h1>
 
-    <body>
-        <h1>Dodaj ogłoszenie</h1>
+<h2>Im więcej szczegółów, tym lepiej!</h2>
 
-        <h2>Im więcej szczegółów, tym lepiej!</h2>
-        <h3>Tytuł ogłoszenia</h3>
-        <input type="text" />    <!-- edytowalne pole tekstowe -->
+<!--HTML element; th:action="@{/path}" pozwala wskazać dowolny endpoint;
+    domyślnie ten sam, który był wywołany dla GET - tutaj /offers/form
+    WAŻNE: każdy bean, który odczytujemy z modelu musi się tam znajdować,
+    również obiekt bindowany przez formularz!-->
+<form th:action="@{/offers}" th:object="${offerDto}" method="post">
+  <div>
+    <h3>Tytuł ogłoszenia</h3>
+    <p><input type="text" th:field="*{title}"/></p>
+    <span class="validation-error"
+          th:if="${#fields.hasErrors('title')}"
+          th:errors="*{title}">Title error</span>
+  </div>
 
-        <h3>Kategoria</h3>
-        <!--
-        <p th:text="${mainCategoriesToSubcategoriesMap}">Jaki jest rezultat tej operacji?</p>
-        -->
-        <!--
-        <tr th:each="mapEntry : ${mainCategoriesToSubcategoriesMap}">
-            <td th:text="${mapEntry.key}">key</td>
-            <br>
-            <td th:text="${mapEntry.value}">value</td>
-            <hr>
-        </tr>
-        -->
-        <!--
-        <tr th:each="mapEntry : ${mainCategoriesToSubcategoriesMap}">
-            <td th:text="${mapEntry.key}">key</td>
-            <br>
-            <select name="subCategories">
-                <option th:each="subcategory : ${mapEntry.value}"
-                        th:text="${subcategory.name}"
-                        th:value="${subcategory.id}"/>
-            </select>
-            <hr>
-        </tr>
-        -->
-        <select id="mainCategories" onchange="createSubcategoriesSelect()">
-            <option th:each="mapEntry : ${mainCategoriesToSubcategoriesMap}"
-                    th:text="${mapEntry.key}"
-                    th:value="${mapEntry.key}">
-            </option>
-        </select>
-        <div id="subCategoriesDiv"></div>
+  <div>
+    <h3>Kategoria</h3>
+    <select id="mainCategories" onchange="createSubcategoriesSelect()">
+      <option th:each="mapEntry : ${mainCategoriesToSubcategoriesMap}"
+              th:value="${mapEntry.key}"
+              th:text="${mapEntry.key}">subcategory</option>
+    </select>
+    <div class="subCategoriesDiv"></div>
+    <span class="validation-error"
+          th:if="${#fields.hasErrors('subcategoryId')}"
+          th:errors="*{subcategoryId}">Title error</span>
+  </div>
 
-        <h3>Opis</h3>
-        <textarea rows="20" cols="100">
-            Wpisz te informacje, które byłyby dla Ciebie ważne podczas przeglądania takiego ogłoszenia
-        </textarea>
+  <div>
+    <h3>Opis</h3>
+    <textarea rows="20" cols="100" th:field="*{description}">
+      Wpisz te informacje, które byłyby dla Ciebie ważne podczas przeglądania takiego ogłoszenia
+    </textarea>
+    <span class="validation-error"
+          th:if="${#fields.hasErrors('description')}"
+          th:errors="*{description}">Title error</span>
+  </div>
 
-        <h2>Dane kontaktowe</h2>
-        <h3>Lokalizacja</h3>
-        <input type="text" />
-        <h3>Adres e-mail</h3>
-        <input type="text" />
-        <h3>Numer telefonu</h3>
-        <input type="text" />
+  <div>
+    <h2>Dane kontaktowe</h2>
+    <h3>Lokalizacja</h3>
+    <p><input type="text" th:field="*{localization}"/></p>
+    <h3>Adres e-mail</h3>
+    <p><input type="text" th:field="*{email}"/></p>
+    <span class="validation-error"
+          th:if="${#fields.hasErrors('email')}"
+          th:errors="*{email}">Title error</span>
+    <h3>Numer telefonu</h3>
+    <p><input type="text" th:field="*{phone}"/></p>
+    <span class="validation-error"
+          th:if="${#fields.hasErrors('phone')}"
+          th:errors="*{phone}">Title error</span>
+  </div>
 
-        <script th:src="@{/js/jquery.min.js}"></script>
-        <script th:inline="javascript">
-            function createSubcategoriesSelect() {
-                var selectedCategory = $("#mainCategories option:selected").val();
-                console.log("Selected main category = " + selectedCategory);
-                var mainCategoriesToSubcategoriesMap = [[${mainCategoriesToSubcategoriesMap}]];
-                var mainCategoriesToSubcategoriesMap = new Map(Object.entries(mainCategoriesToSubcategoriesMap));
-                console.log("Main categories to subcategories map: " + mainCategoriesToSubcategoriesMap);
-                var subcategories = mainCategoriesToSubcategoriesMap.get(selectedCategory);
-                var html = '<select id="subcategories">'
-                for(var i = 0; i < subcategories.length; i++) {
-                    html += getHtmlForSubcategoryOption(subcategories[i]);
-                }
-                html += "</select>";
+  <input type="submit" value="Dodaj ogłoszenie">  <!-- submit odpowiada za wywołanie akcji formularza-->
+</form>
 
-                $("#subCategoriesDiv").empty().append(html);
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:inline="javascript">
+        function createSubcategoriesSelect() {
+            var selectedCategory = $("#mainCategories option:selected").val();
+            console.log("Selected main category = " + selectedCategory);
+            var mainCategoriesToSubcategoriesMap = [[${mainCategoriesToSubcategoriesMap}]];
+            var mainCategoriesToSubcategoriesMap = new Map(Object.entries(mainCategoriesToSubcategoriesMap));
+            console.log("Main categories to subcategories map: " + mainCategoriesToSubcategoriesMap);
+            var subcategories = mainCategoriesToSubcategoriesMap.get(selectedCategory);
+            /*
+              th:field="*{subcategoryId}" nie zadziała! skąd wiedziałem co zrobić?
+              Thymeleaf to przecież tylko generator kodu HTML:
+              https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html#inputs
+            */
+            var html = '<select id="subcategoryId" name="subcategoryId">'
+            for(var i = 0; i < subcategories.length; i++) {
+                html += getHtmlForSubcategoryOption(subcategories[i]);
             }
-            function getHtmlForSubcategoryOption(subcategoryObj) {
-                var html = '<option value="' + subcategoryObj.id + '">' + subcategoryObj.name + '</option>';
-                return html;
+            html += "</select>";
+
+            $(".subCategoriesDiv").empty().append(html);
+        }
+        function getHtmlForSubcategoryOption(subcategoryObj) {
+            var html = '<option value="' + subcategoryObj.id + '">' + subcategoryObj.name + '</option>';
+            return html;
+        }
+        $('document').ready(function() {
+            createSubcategoriesSelect();
             }
-            $('document').ready(function() {
-                createSubcategoriesSelect();
-                }
-             );
-        </script>
-    </body>
+         );
+    </script>
+</body>
 
 </html>
