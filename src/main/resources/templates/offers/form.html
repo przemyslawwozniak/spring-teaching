@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Nowe ogłoszenie | OLO</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+    <body>
+        <h1>Dodaj ogłoszenie</h1>
+
+        <h2>Im więcej szczegółów, tym lepiej!</h2>
+        <h3>Tytuł ogłoszenia</h3>
+        <input type="text" />    <!-- edytowalne pole tekstowe -->
+
+        <h3>Kategoria</h3>
+        <!--
+        <p th:text="${mainCategoriesToSubcategoriesMap}">Jaki jest rezultat tej operacji?</p>
+        -->
+        <!--
+        <tr th:each="mapEntry : ${mainCategoriesToSubcategoriesMap}">
+            <td th:text="${mapEntry.key}">key</td>
+            <br>
+            <td th:text="${mapEntry.value}">value</td>
+            <hr>
+        </tr>
+        -->
+        <!--
+        <tr th:each="mapEntry : ${mainCategoriesToSubcategoriesMap}">
+            <td th:text="${mapEntry.key}">key</td>
+            <br>
+            <select name="subCategories">
+                <option th:each="subcategory : ${mapEntry.value}"
+                        th:text="${subcategory.name}"
+                        th:value="${subcategory.id}"/>
+            </select>
+            <hr>
+        </tr>
+        -->
+        <select id="mainCategories" onchange="createSubcategoriesSelect()">
+            <option th:each="mapEntry : ${mainCategoriesToSubcategoriesMap}"
+                    th:text="${mapEntry.key}"
+                    th:value="${mapEntry.key}">
+            </option>
+        </select>
+        <div id="subCategoriesDiv"></div>
+
+        <h3>Opis</h3>
+        <textarea rows="20" cols="100">
+            Wpisz te informacje, które byłyby dla Ciebie ważne podczas przeglądania takiego ogłoszenia
+        </textarea>
+
+        <h2>Dane kontaktowe</h2>
+        <h3>Lokalizacja</h3>
+        <input type="text" />
+        <h3>Adres e-mail</h3>
+        <input type="text" />
+        <h3>Numer telefonu</h3>
+        <input type="text" />
+
+        <script th:src="@{/js/jquery.min.js}"></script>
+        <script th:inline="javascript">
+            function createSubcategoriesSelect() {
+                var selectedCategory = $("#mainCategories option:selected").val();
+                console.log("Selected main category = " + selectedCategory);
+                var mainCategoriesToSubcategoriesMap = [[${mainCategoriesToSubcategoriesMap}]];
+                var mainCategoriesToSubcategoriesMap = new Map(Object.entries(mainCategoriesToSubcategoriesMap));
+                console.log("Main categories to subcategories map: " + mainCategoriesToSubcategoriesMap);
+                var subcategories = mainCategoriesToSubcategoriesMap.get(selectedCategory);
+                var html = '<select id="subcategories">'
+                for(var i = 0; i < subcategories.length; i++) {
+                    html += getHtmlForSubcategoryOption(subcategories[i]);
+                }
+                html += "</select>";
+
+                $("#subCategoriesDiv").empty().append(html);
+            }
+            function getHtmlForSubcategoryOption(subcategoryObj) {
+                var html = '<option value="' + subcategoryObj.id + '">' + subcategoryObj.name + '</option>';
+                return html;
+            }
+            $('document').ready(function() {
+                createSubcategoriesSelect();
+                }
+             );
+        </script>
+    </body>
+
+</html>
