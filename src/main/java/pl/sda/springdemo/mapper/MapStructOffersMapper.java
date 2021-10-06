@@ -18,6 +18,7 @@ public abstract class MapStructOffersMapper implements OffersMapper {   //najczÄ
     @Autowired
     protected SubcategoriesRepository subcategoriesRepository;
 
+    @Mapping(target = "city", source = "localization")
     @Mapping(target = "subcategory", expression = "java( subcategoriesRepository.getById(source.getSubcategoryId()).get() )")
     public abstract Offer mapFromDtoToDomain(OfferDto source);
 

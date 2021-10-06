@@ -17,7 +17,7 @@ public class ManualOffersMapper implements OffersMapper {
 
         target.setTitle(source.getTitle());
         target.setDescription(source.getDescription());
-        target.setLocalization(source.getLocalization());
+        target.setCity(source.getLocalization());   //tu musiałem zmienić ręcznie z target.localization na target.city
         target.setEmail(source.getEmail());
         target.setPhone(source.getPhone());
 

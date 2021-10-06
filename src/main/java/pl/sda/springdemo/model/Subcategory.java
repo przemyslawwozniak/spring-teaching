@@ -1,13 +1,29 @@
 package pl.sda.springdemo.model;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@Data
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "categories")
+@Getter
+@Setter
 @RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)  //konstruktor bezargumentowy wymagany przez Hibernate
 public class Subcategory {
 
+    @Id
+    @GeneratedValue
     private final String id;
+
     private final String name;
     private final MainCategory mainCategory;
 
