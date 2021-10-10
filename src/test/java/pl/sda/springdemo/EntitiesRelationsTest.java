@@ -1,10 +1,13 @@
 package pl.sda.springdemo;
 
 import org.assertj.core.api.Assertions;
+import org.h2.tools.Server;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
@@ -13,8 +16,10 @@ import pl.sda.springdemo.repository.OffersRepository;
 import pl.sda.springdemo.repository.UsersRepository;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Arrays;
 
+//@TestPropertySource("classpath:test.properties")
 //@SpringBootTest
 @DataJpaTest
 public class EntitiesRelationsTest {
@@ -23,7 +28,13 @@ public class EntitiesRelationsTest {
     private OffersRepository offersRepository;
     @Autowired
     private UsersRepository usersRepository;
-
+/*
+    @BeforeAll
+    static void setupWebServer() throws SQLException {
+        Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082")
+                .start();
+    }
+*/
     @Test
     void user_adds_offers() {
         //given
@@ -103,11 +114,11 @@ public class EntitiesRelationsTest {
                 .observedOffers(Arrays.asList(offer1, offer2, offer3))
                 .build();
 
-        usersRepository.saveAll(Arrays.asList(user1, user2));
+        usersRepository.saveAll(Arrays.asList(user1, user2));   //nadaje encjom ID (persistent object state)
 
         //when
-        var bmwFan = usersRepository.getById(1L);
-        var allCarFan = usersRepository.getById(2L);
+        var bmwFan = usersRepository.getById(user1.getId());    //nie mozemy zakladac np. 1L bo baza zyje przez caly czas testow i jesli w tej tabeli znajduja sie juz rekordy, ID bedzie zgodne z sekwencja
+        var allCarFan = usersRepository.getById(user2.getId());
 
         //then
         Assertions.assertThat(bmwFan.getObservedOffers()).isNotEmpty();
