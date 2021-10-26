@@ -18,7 +18,7 @@ public class OffersService {
 
     public Map<String, List<Subcategory>> getMainCategoriesDisplayNamesToSubcategoriesMap() {
         Map<String, List<Subcategory>> outputMap = new HashMap<>();
-        var subcategories = subcategoriesRepository.getAllSubcategories();
+        var subcategories = subcategoriesRepository.findAll();
 
         for(var mainCategory : Subcategory.MainCategory.values()) {
             var matchingSubcategories = subcategories.stream()

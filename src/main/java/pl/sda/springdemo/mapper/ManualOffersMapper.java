@@ -12,7 +12,8 @@ public class ManualOffersMapper implements OffersMapper {
 
     private final SubcategoriesRepository subcategoriesRepository;
 
-    public Offer mapFromDtoToDomain(OfferDto source) {
+    //uwidacznia sie wada "recznie pisanych" mapperow - brak dopasowania do zmieniajacego sie kodu (co MapStruct na pewnym poziomie zapewnia)
+    public Offer mapFromDtoToDomain(OfferDto source) {/*
         Offer target = new Offer();
 
         target.setTitle(source.getTitle());
@@ -23,7 +24,8 @@ public class ManualOffersMapper implements OffersMapper {
 
         target.setSubcategory(subcategoriesRepository.getById(source.getSubcategoryId()).get());
 
-        return target;
+        return target;*/
+        return null;
     }
 
 }

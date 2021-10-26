@@ -17,6 +17,7 @@
 		<java.version>11</java.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<projectlombok.version>1.18.20</projectlombok.version>
+		<hibernate-jpamodelgen.version>5.6.0.Final</hibernate-jpamodelgen.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -50,6 +51,13 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<!-- Needed for Spring Data Specification -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+			<version>${hibernate-jpamodelgen.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -88,6 +96,11 @@
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok-mapstruct-binding</artifactId>
 							<version>0.2.0</version>
+						</path>
+						<path>
+							<groupId>org.hibernate</groupId>
+							<artifactId>hibernate-jpamodelgen</artifactId>
+							<version>${hibernate-jpamodelgen.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

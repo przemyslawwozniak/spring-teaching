@@ -16,7 +16,7 @@ public class OfferDto {
     private String title;
 
     @NotNull(message = "Subcategory must be given")
-    private String subcategoryId;
+    private Long subcategoryId;
 
     @NotBlank(message = "Please provide description")
     private String description;

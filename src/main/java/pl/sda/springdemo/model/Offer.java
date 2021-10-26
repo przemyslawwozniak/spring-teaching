@@ -5,11 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -57,7 +55,9 @@ public class Offer {
 
     @PrePersist
     void setPublishedDate() {
-        this.publishedDate = LocalDate.now();
+        if(this.publishedDate == null) {    //zebysmy mogli ustawic w tescie date publikacji
+            this.publishedDate = LocalDate.now();
+        }
     }
 
     @PostLoad
