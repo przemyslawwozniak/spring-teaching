@@ -1,5 +1,7 @@
 package pl.sda.springdemo.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -41,6 +43,12 @@ public interface OffersRepository extends JpaRepository<Offer, Long>, JpaSpecifi
     List<Offer> findByTitleLikeIgnoreCaseAndPriceBetween(@Param("titleSubstring") String titleSubstring,
                                                          @Param("priceLb") BigDecimal priceLb,
                                                          @Param("priceUb") BigDecimal priceUb);
+
+    @Query(value = "SELECT o FROM Offer o INNER JOIN o.subcategory sc WHERE sc.name = :subcategoryName")
+    Page<Offer> findBySubcategoryName(@Param("subcategoryName") String subcategoryName, Pageable pageable);
+
+    @Query(value = "SELECT o FROM Offer o INNER JOIN o.subcategory sc WHERE sc.name = :subcategoryName")
+    List<Offer> findBySubcategoryName(@Param("subcategoryName") String subcategoryName);
 
     @Query(value = "SELECT * FROM offers AS o WHERE o.title LIKE %:titleSubstring% AND o.price BETWEEN :priceLb AND :priceUb",
            nativeQuery = true)
