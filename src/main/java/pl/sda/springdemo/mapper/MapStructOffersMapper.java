@@ -3,6 +3,7 @@ package pl.sda.springdemo.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.sda.springdemo.dto.AddOfferDto;
 import pl.sda.springdemo.dto.OfferDto;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.repository.SubcategoriesRepository;
@@ -21,5 +22,8 @@ public abstract class MapStructOffersMapper implements OffersMapper {   //najczÄ
     @Mapping(target = "city", source = "localization")
     @Mapping(target = "subcategory", expression = "java( subcategoriesRepository.getById(source.getSubcategoryId()) )")   //'expression' oznacza koniecznosc wprowadzania zmian recznie + brak walidacji
     public abstract Offer mapFromDtoToDomain(OfferDto source);
+
+    @Mapping(target = "subcategory", expression = "java( subcategoriesRepository.findByName(source.getSubcategoryName()) )")
+    public abstract Offer mapFromAddOfferDtoToDomain(AddOfferDto source);
 
 }

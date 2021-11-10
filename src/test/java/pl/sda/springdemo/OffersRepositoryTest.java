@@ -216,7 +216,7 @@ public class OffersRepositoryTest {
         var titleSubstring = "laptop";
         var priceLowerBound = BigDecimal.valueOf(1000);
         var priceUpperBound = BigDecimal.valueOf(7000);
-        var subcategory = subcategoriesRepository.findByName("Computers").get();
+        var subcategory = subcategoriesRepository.findByName("Computers");
         var city = "Warszawa";
 
         //when

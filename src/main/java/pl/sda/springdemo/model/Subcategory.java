@@ -3,6 +3,7 @@ package pl.sda.springdemo.model;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import javax.persistence.Table;
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)  //konstruktor bezargumentowy wymagany przez Hibernate
 @Builder
+@EqualsAndHashCode
 public class Subcategory {
 
     @Id

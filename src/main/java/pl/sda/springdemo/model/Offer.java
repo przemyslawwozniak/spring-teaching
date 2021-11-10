@@ -68,4 +68,31 @@ public class Offer {
         }
     }
 
+    public Offer update(Offer offerUpdate) {
+        if(offerUpdate.getTitle() != null && ! this.title.equals(offerUpdate.getTitle())) {
+            this.title = offerUpdate.getTitle();
+        }
+        if(offerUpdate.getPhone() != null && ! this.phone.equals(offerUpdate.getPhone())) {
+            this.phone = offerUpdate.getPhone();
+        }
+        if(offerUpdate.getEmail() != null && ! this.email.equals(offerUpdate.getEmail())) {
+            this.email = offerUpdate.getEmail();
+        }
+        if(offerUpdate.getCity() != null && ! this.city.equals(offerUpdate.getCity())) {
+            this.city = offerUpdate.getCity();
+        }
+        if(offerUpdate.getDescription() != null && ! this.description.equals(offerUpdate.getDescription())) {
+            this.description = offerUpdate.getDescription();
+        }
+        if(offerUpdate.getPrice() != null && ! this.price.equals(offerUpdate.getPrice())) {
+            this.price = offerUpdate.getPrice();
+        }
+        //wykorzystuje @EqualsAndHashCode; mapowane z DTO z name na entity, dlatego mozemy podmienic
+        if(offerUpdate.getSubcategory() != null && ! this.subcategory.equals(offerUpdate.getSubcategory())) {
+            this.subcategory = offerUpdate.getSubcategory();
+        }
+
+        return this;
+    }
+
 }

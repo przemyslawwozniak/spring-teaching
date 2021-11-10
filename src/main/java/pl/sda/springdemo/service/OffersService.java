@@ -1,10 +1,13 @@
 package pl.sda.springdemo.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pl.sda.springdemo.dto.AddOfferDto;
 import pl.sda.springdemo.dto.RecentOffersQuerySpecsDto;
+import pl.sda.springdemo.mapper.OffersMapper;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
 import pl.sda.springdemo.repository.OffersRepository;
@@ -56,6 +59,25 @@ public class OffersService {
 
     public Optional<Offer> getOffer(Long id) {
         return offersRepository.findById(id);
+    }
+
+    public Offer addOffer(Offer offer) {
+        return offersRepository.save(offer);
+    }
+
+    public Offer updateOffer(Offer offerUpdate, Long id) {
+        var persistedOffer = offersRepository.findById(id).get();
+        persistedOffer = persistedOffer.update(offerUpdate);
+        return offersRepository.save(persistedOffer);
+    }
+
+    public void deleteOffer(Long id) {
+        try {
+            offersRepository.deleteById(id);
+        }
+        catch (EmptyResultDataAccessException ex) {
+            //do nothing
+        }
     }
 
 }
