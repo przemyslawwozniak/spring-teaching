@@ -5,9 +5,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import pl.sda.springdemo.dto.AddOfferDto;
 import pl.sda.springdemo.dto.RecentOffersQuerySpecsDto;
-import pl.sda.springdemo.mapper.OffersMapper;
+import pl.sda.springdemo.exception.DbResourceNotFoundException;
+import pl.sda.springdemo.exception.OfferNotFoundException;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
 import pl.sda.springdemo.repository.OffersRepository;
@@ -56,9 +56,14 @@ public class OffersService {
         var pageReq = PageRequest.of(querySpecs.getPage(), querySpecs.getOffersPerPage(), Sort.by("publishedDate").descending());
         return offersRepository.findBySubcategoryName(querySpecs.getSubcategoryName(), pageReq).getContent();
     }
-
+/*
     public Optional<Offer> getOffer(Long id) {
         return offersRepository.findById(id);
+    }
+*/
+    public Offer getOffer(Long id) {
+        checkOfferExist(id);
+        return offersRepository.findById(id).get(); //jesli uzyjemy getById(id) bedzie 500 - wiecej https://stackoverflow.com/a/58490797/3673353
     }
 
     public Offer addOffer(Offer offer) {
@@ -66,6 +71,7 @@ public class OffersService {
     }
 
     public Offer updateOffer(Offer offerUpdate, Long id) {
+        checkOfferExist(id);
         var persistedOffer = offersRepository.findById(id).get();
         persistedOffer = persistedOffer.update(offerUpdate);
         return offersRepository.save(persistedOffer);
@@ -76,7 +82,14 @@ public class OffersService {
             offersRepository.deleteById(id);
         }
         catch (EmptyResultDataAccessException ex) {
-            //do nothing
+            //zmieniamy z checked exception na not checked aby nie pisac try-catch na sciezce wyjatku
+            throw new DbResourceNotFoundException(id.toString());
+        }
+    }
+
+    public void checkOfferExist(Long id) {
+        if(! offersRepository.existsById(id)) {
+            throw new OfferNotFoundException(id);
         }
     }
 
