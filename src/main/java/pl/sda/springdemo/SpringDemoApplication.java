@@ -18,7 +18,6 @@ import java.util.Arrays;
 public class SpringDemoApplication implements CommandLineRunner {
 
 	private final OffersRepository offersRepository;
-	private final SubcategoriesRepository subcategoriesRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringDemoApplication.class, args);
