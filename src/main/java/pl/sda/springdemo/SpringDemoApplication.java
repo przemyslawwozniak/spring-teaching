@@ -1,9 +1,11 @@
 package pl.sda.springdemo;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.annotation.Order;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
 import pl.sda.springdemo.repository.OffersRepository;
@@ -15,6 +17,8 @@ import java.util.Arrays;
 
 @SpringBootApplication
 @RequiredArgsConstructor
+@Order(-1)
+@Slf4j
 public class SpringDemoApplication implements CommandLineRunner {
 
 	private final OffersRepository offersRepository;
@@ -87,5 +91,7 @@ public class SpringDemoApplication implements CommandLineRunner {
 				.build();
 
 		offersRepository.saveAll(Arrays.asList(offer1, offer2, offer3, offer4, offer5, offer6));
+
+		log.info("Database initialized via CommandLineRunner");
 	}
 }
