@@ -9,7 +9,6 @@ import org.springframework.core.annotation.Order;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
 import pl.sda.springdemo.repository.OffersRepository;
-import pl.sda.springdemo.repository.SubcategoriesRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

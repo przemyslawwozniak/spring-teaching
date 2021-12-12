@@ -1,10 +1,12 @@
 package pl.sda.springdemo.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pl.sda.springdemo.config.OffersServiceConfigurationPropertiesHolder;
 import pl.sda.springdemo.dto.RecentOffersQuerySpecsDto;
 import pl.sda.springdemo.exception.DbResourceNotFoundException;
 import pl.sda.springdemo.exception.OfferNotFoundException;
@@ -20,12 +22,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@ConfigurationProperties(prefix = "offers.page.size")   //metoda nr 1 - bean samodzielnie zarzadza konfiguracja (posiada pole z wartosciami konfiguracji)
 public class OffersServiceImpl implements OffersService {
 
-    private final int PAGE_SIZE = 10;
+    private int pageSize = 10;  //metoda nr 1 - domyslna wartosc
 
     private final SubcategoriesRepository subcategoriesRepository;
     private final OffersRepository offersRepository;
+    private final OffersServiceConfigurationPropertiesHolder propertiesHolder;  //metoda nr 2 - external bean posiada cala konfiguracje
 
     public Map<String, List<Subcategory>> getMainCategoriesDisplayNamesToSubcategoriesMap() {
         Map<String, List<Subcategory>> outputMap = new HashMap<>();
@@ -42,12 +46,12 @@ public class OffersServiceImpl implements OffersService {
     }
 
     public List<Offer> getRecentOffers() {
-        var pageReq = PageRequest.of(0, PAGE_SIZE, Sort.by("publishedDate").descending());
+        var pageReq = PageRequest.of(0, pageSize, Sort.by("publishedDate").descending());   //metoda nr 1
         return offersRepository.findAll(pageReq).getContent();
     }
 
     public List<Offer> getRecentOffers(String subcategoryName) {
-        var pageReq = PageRequest.of(0, PAGE_SIZE, Sort.by("publishedDate").descending());
+        var pageReq = PageRequest.of(0, propertiesHolder.getPage().getSize(), Sort.by("publishedDate").descending());   //metoda nr 2
         return offersRepository.findBySubcategoryName(subcategoryName, pageReq).getContent();
     }
 
