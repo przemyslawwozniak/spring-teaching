@@ -9,15 +9,19 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+import pl.sda.springdemo.model.Chat;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
 import pl.sda.springdemo.model.User;
+import pl.sda.springdemo.repository.ChatRepository;
 import pl.sda.springdemo.repository.OffersRepository;
 import pl.sda.springdemo.repository.UsersRepository;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 //@TestPropertySource("classpath:test.properties")
 //@SpringBootTest
@@ -28,13 +32,15 @@ public class EntitiesRelationsTest {
     private OffersRepository offersRepository;
     @Autowired
     private UsersRepository usersRepository;
-/*
+    @Autowired
+    private ChatRepository chatRepository;
+
     @BeforeAll
     static void setupWebServer() throws SQLException {
         Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082")
                 .start();
     }
-*/
+
     @Test
     void user_adds_offers() {
         //given
@@ -105,15 +111,8 @@ public class EntitiesRelationsTest {
 
         offersRepository.saveAll(Arrays.asList(offer1, offer2, offer3));
 
-        var user1 = User.builder()
-                .email("bmw4ever@gmail.com")
-                .observedOffers(Arrays.asList(offer1, offer2))
-                .build();
-        var user2 = User.builder()
-                .email("whatever@gmail.com")
-                .observedOffers(Arrays.asList(offer1, offer2, offer3))
-                .build();
-
+        var user1 = buildUserWithOffers("bmw4ever@gmail.com", Arrays.asList(offer1, offer2));
+        var user2 = buildUserWithOffers("whatever@gmail.com", Arrays.asList(offer1, offer2, offer3));
         usersRepository.saveAll(Arrays.asList(user1, user2));   //nadaje encjom ID (persistent object state)
 
         //when
@@ -126,6 +125,41 @@ public class EntitiesRelationsTest {
 
         Assertions.assertThat(allCarFan.getObservedOffers()).isNotEmpty();
         Assertions.assertThat(allCarFan.getObservedOffers()).hasSize(3);
+    }
+
+    //--- --- --- CWICZENIE 1 - rozwiazanie
+    @Test
+    void user_opens_chat_for_offer() {
+        //given
+        var user1 = buildUserWithOffers("chatUser1@gmail.com", new ArrayList<>());
+        var user2 = buildUserWithOffers("chatUser2@gmail.com", new ArrayList<>());
+
+        var chat = new Chat();
+        var chat2 = new Chat();
+
+        user1.setTalks(List.of(chat));
+        user2.setTalks(List.of(chat, chat2));
+
+        //chatRepository.saveAll(Arrays.asList(chat, chat2));
+        usersRepository.saveAll(Arrays.asList(user1, user2));
+
+        //when
+        var user1Persisted = usersRepository.getById(user1.getId());
+        var user2Persisted = usersRepository.getById(user2.getId());
+
+        //then
+        Assertions.assertThat(user1Persisted.getTalks()).isNotEmpty();
+        Assertions.assertThat(user1Persisted.getTalks()).hasSize(1);
+
+        Assertions.assertThat(user2Persisted.getTalks()).isNotEmpty();
+        Assertions.assertThat(user2Persisted.getTalks()).hasSize(2);
+    }
+
+    private User buildUserWithOffers(String userEmail, List<Offer> userOffers) {
+        return User.builder()
+                .email(userEmail)
+                .observedOffers(userOffers)
+                .build();
     }
 
 }
