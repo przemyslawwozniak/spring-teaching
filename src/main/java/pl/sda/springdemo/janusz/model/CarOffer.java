@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
-class CarOffer {
+public class CarOffer {
 
     @Id
     @Access(AccessType.PROPERTY)
@@ -31,7 +32,9 @@ class CarOffer {
     private String desc;
     private BigDecimal price;
     private CarModel.CarBrand carBrand; //duplikujemy z CarModel poniewaz jest to nasz podstawowy parametr wyszukiwania
-    private String carModel;    //to-do: refactor to CarModel entity
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "car_model_id")
+    private CarModel carModel;
     private short productionYear;
     private int carMileageInKm;
     @Enumerated(EnumType.STRING)
@@ -45,7 +48,7 @@ class CarOffer {
     @Enumerated(EnumType.STRING)
     private CarBodyType carBodyType;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "dealer_id")
     private Dealer dealer;
 }

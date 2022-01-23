@@ -1,4 +1,4 @@
-package pl.sda.springdemo;
+package pl.sda.springdemo.olo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

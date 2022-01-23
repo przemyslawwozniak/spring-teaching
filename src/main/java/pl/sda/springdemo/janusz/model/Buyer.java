@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
-class Buyer {
+public class Buyer {
 
     @Id
     @GeneratedValue

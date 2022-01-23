@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Entity
 @Setter
 @Getter
-class Bid {
+public class Bid {
 
     @Id
     @GeneratedValue

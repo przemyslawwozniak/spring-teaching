@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Entity
 @Setter
 @Getter
-class Dealer {
+public class Dealer {
 
     @Id
     @GeneratedValue

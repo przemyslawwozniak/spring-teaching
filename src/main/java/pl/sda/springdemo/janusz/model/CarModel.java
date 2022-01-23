@@ -21,7 +21,7 @@ class CarModel {
 
     @Id
     @GeneratedValue
-    private final Long carModelId;
+    private Long carModelId;
 
     private final String name;
 

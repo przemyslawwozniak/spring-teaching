@@ -1,4 +1,4 @@
-package pl.sda.springdemo;
+package pl.sda.springdemo.olo;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
