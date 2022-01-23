@@ -1,6 +1,6 @@
 package pl.sda.springdemo.janusz.model;
 
-enum CarBodyType {
+public enum CarBodyType {
 
     SEDAN,
     COMBI,
