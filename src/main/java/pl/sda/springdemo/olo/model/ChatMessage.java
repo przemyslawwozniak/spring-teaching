@@ -1,4 +1,4 @@
-package pl.sda.springdemo.model;
+package pl.sda.springdemo.olo.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,26 +7,26 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "chats")
+@Table(name = "messages")
 @Getter
 @Setter
-public class Chat {
+public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime modificationDateTime;
+    private String text;
+    private LocalDateTime sentDateTime;
+    private Long senderId;
+    private Long receiverId;
 
-    private Long offerId; //nie FK, po prostu dana - nie potrzebujemy tu połączenia w rozumieniu relacji
-
-    @OneToMany(mappedBy = "chat")
-    private List<ChatMessage> messages;
+    @ManyToOne
+    private Chat chat;
 
 }

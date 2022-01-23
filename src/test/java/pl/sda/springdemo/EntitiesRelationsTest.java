@@ -1,22 +1,17 @@
 package pl.sda.springdemo;
 
 import org.assertj.core.api.Assertions;
-import org.h2.tools.Server;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import pl.sda.springdemo.model.Offer;
-import pl.sda.springdemo.model.Subcategory;
-import pl.sda.springdemo.model.User;
-import pl.sda.springdemo.repository.OffersRepository;
-import pl.sda.springdemo.repository.UsersRepository;
+import pl.sda.springdemo.olo.model.Offer;
+import pl.sda.springdemo.olo.model.Subcategory;
+import pl.sda.springdemo.olo.model.User;
+import pl.sda.springdemo.olo.repository.OffersRepository;
+import pl.sda.springdemo.olo.repository.UsersRepository;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 //@TestPropertySource("classpath:test.properties")

@@ -1,4 +1,4 @@
-package pl.sda.springdemo.model;
+package pl.sda.springdemo.olo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

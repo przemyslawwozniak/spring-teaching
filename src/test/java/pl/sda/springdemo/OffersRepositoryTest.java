@@ -7,10 +7,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Sort;
-import pl.sda.springdemo.model.Offer;
-import pl.sda.springdemo.model.Subcategory;
-import pl.sda.springdemo.repository.OffersRepository;
-import pl.sda.springdemo.repository.SubcategoriesRepository;
+import pl.sda.springdemo.olo.model.Offer;
+import pl.sda.springdemo.olo.model.Subcategory;
+import pl.sda.springdemo.olo.repository.OffersRepository;
+import pl.sda.springdemo.olo.repository.SubcategoriesRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

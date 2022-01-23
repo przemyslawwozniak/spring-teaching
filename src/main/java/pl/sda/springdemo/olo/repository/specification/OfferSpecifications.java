@@ -1,9 +1,9 @@
-package pl.sda.springdemo.repository.specification;
+package pl.sda.springdemo.olo.repository.specification;
 
 import org.springframework.data.jpa.domain.Specification;
-import pl.sda.springdemo.model.Offer;
-import pl.sda.springdemo.model.Offer_;
-import pl.sda.springdemo.model.Subcategory;
+import pl.sda.springdemo.olo.model.Offer;
+import pl.sda.springdemo.olo.model.Offer_;
+import pl.sda.springdemo.olo.model.Subcategory;
 
 import java.math.BigDecimal;
 
