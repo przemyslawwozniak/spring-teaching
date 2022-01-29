@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.sda.springdemo.dto.RecentOffersQuerySpecsDto;
 import pl.sda.springdemo.exception.DbResourceNotFoundException;
 import pl.sda.springdemo.exception.OfferNotFoundException;
+import pl.sda.springdemo.exception.SubcategoryNotFoundException;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
 import pl.sda.springdemo.repository.OffersRepository;
@@ -47,8 +48,18 @@ public class OffersServiceImpl implements OffersService {
     }
 
     public List<Offer> getRecentOffers(String subcategoryName) {
+        validateSubcategoryName(subcategoryName);
         var pageReq = PageRequest.of(0, PAGE_SIZE, Sort.by("publishedDate").descending());
         return offersRepository.findBySubcategoryName(subcategoryName, pageReq).getContent();
+    }
+
+    private void validateSubcategoryName(String subcategoryName) {
+        if(subcategoriesRepository.existsByName(subcategoryName)) {
+            //do nothing
+        }
+        else {
+            throw new SubcategoryNotFoundException(subcategoryName);
+        }
     }
 
     public List<Offer> getRecentOffers(RecentOffersQuerySpecsDto querySpecs) {

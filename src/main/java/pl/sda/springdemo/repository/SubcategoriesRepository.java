@@ -8,5 +8,6 @@ import pl.sda.springdemo.model.Subcategory;
 public interface SubcategoriesRepository extends JpaRepository<Subcategory, Long> {
 
     Subcategory findByName(String name);
+    boolean existsByName(String name);
 
 }

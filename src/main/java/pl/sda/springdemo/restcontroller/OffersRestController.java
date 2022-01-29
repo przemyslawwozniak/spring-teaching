@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sda.springdemo.dto.AddOfferDto;
 import pl.sda.springdemo.exception.DbResourceNotFoundException;
+import pl.sda.springdemo.exception.SubcategoryNotFoundException;
 import pl.sda.springdemo.response.ErrorResponse;
 import pl.sda.springdemo.response.OfferTileResponse;
 import pl.sda.springdemo.dto.RecentOffersQuerySpecsDto;
@@ -100,6 +101,12 @@ class OffersRestController {
     @ResponseStatus(HttpStatus.NOT_FOUND)   //404 oznacza brak zasobu
     @ExceptionHandler(DbResourceNotFoundException.class)
     ErrorResponse handleDbResourceNotFoundException(final DbResourceNotFoundException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(SubcategoryNotFoundException.class)
+    ErrorResponse handleSubcategoryFoundException(final SubcategoryNotFoundException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 
