@@ -1,6 +1,6 @@
 package pl.sda.springdemo.janusz.model;
 
-enum FuelType {
+public enum FuelType {
 
     PETROL,
     DIESEL,

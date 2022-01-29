@@ -17,7 +17,7 @@ import javax.persistence.Id;
 @Getter
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-class CarModel {
+public class CarModel {
 
     @Id
     @GeneratedValue
@@ -28,7 +28,7 @@ class CarModel {
     @Enumerated(EnumType.STRING)
     private final CarBrand brand;   //kontroluje na poziomie struktury danych dopasowanie brand - model
 
-    enum CarBrand {     //rzadko sie zmienia
+    public enum CarBrand {     //rzadko sie zmienia
         MERCEDES("Mercedes"),
         AUDI("Audi"),
         VOLKSWAGEN("Volkswagen"),
@@ -37,7 +37,9 @@ class CarModel {
         BENTLEY("Bentley"),
         FIAT("Fiat"),
         CITROEN("Citroen"),
-        PEUGOT("Peugot");
+        PEUGOT("Peugot"),
+        MAZDA("Mazda"),
+        KIA("Kia");
 
         private final String brandName;
 

@@ -1,6 +1,6 @@
 package pl.sda.springdemo.janusz.model;
 
-enum GearboxType {
+public enum GearboxType {
 
     MANUAL,
     SEMI_AUTO,

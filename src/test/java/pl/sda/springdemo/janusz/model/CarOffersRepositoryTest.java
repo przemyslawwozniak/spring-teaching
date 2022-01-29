@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import pl.sda.springdemo.janusz.repository.CarOffersRepository;
 
@@ -71,6 +73,50 @@ public class CarOffersRepositoryTest {
         Assertions.assertThat(offers_lublin_by_price_asc.get(1).getTitle()).isEqualTo("Mazda CX-9");
     }
 
+    @Test
+    void gets_offers_for_brand_and_model_in_price_range() {
+        //given
+        additionalTestData();
+
+        //when
+        var found_offers = carOffersRepository.findByCarBrandAndCarModel_NameAndPriceBetween(CarModel.CarBrand.PORSCHE, "Cayenne", BigDecimal.valueOf(80000L), BigDecimal.valueOf(120000L));
+
+        //then
+        Assertions.assertThat(found_offers).isNotEmpty();
+        Assertions.assertThat(found_offers).hasSize(2);
+    }
+
+    @Test
+    void gets_offers_in_city_sorted_by_price_asc_paged() {
+        //when
+        var offers_lublin_by_price_asc = carOffersRepository.findByDealer_Address_City("Lublin", PageRequest.of(1, 1, Sort.by(Sort.Direction.ASC, CarOffer_.PRICE)));
+
+        //then
+        Assertions.assertThat(offers_lublin_by_price_asc).isNotEmpty();
+        Assertions.assertThat(offers_lublin_by_price_asc).hasSize(1);
+        Assertions.assertThat(offers_lublin_by_price_asc.get(0).getTitle()).isEqualTo("Mazda CX-9");
+    }
+
+    @Test
+    void gets_offers_by_specification() {
+        //given
+        additionalTestData();
+
+        //when
+        FuelType[] fuelTypes = {FuelType.PETROL, FuelType.LPG, FuelType.HYBRID};
+        CarBodyType[] carBodyTypes = {CarBodyType.SUV, CarBodyType.CABRIO};
+
+        var offers_found = carOffersRepository.findWithSpecification(
+                "porsche", CarModel.CarBrand.PORSCHE, GearboxType.AUTOMATIC,
+                (short)1000, (short)2000, (short)2015, (short)2022,
+                fuelTypes, carBodyTypes,
+                BigDecimal.valueOf(50000L), BigDecimal.valueOf(200000L));
+
+        Assertions.assertThat(offers_found).isNotEmpty();
+        Assertions.assertThat(offers_found).hasSize(1);
+        Assertions.assertThat(offers_found.get(0).getTitle()).isEqualTo("Porsche Cayenne 2017");
+    }
+
     @BeforeAll
     void setup() {
         prepareTestData();
@@ -80,13 +126,25 @@ public class CarOffersRepositoryTest {
         var dealer1 = createDealer("dealer_1", "Warszawa");
         var dealer2 = createDealer("dealer_2", "Lublin");
 
-        var offer1_d1 = createCarOffer(dealer1, "MB W211", 35000L, CarBodyType.SEDAN, LocalDateTime.of(2022, 1, 23, 10, 0));
-        var offer2_d1 = createCarOffer(dealer1, "Audi A4 B9", 60000L, CarBodyType.COMBI, LocalDateTime.of(2021, 12, 31, 23, 59));
+        var offer1_d1 = createCarOffer(dealer1, "MB W211", 35000L, CarBodyType.SEDAN, LocalDateTime.of(2022, 1, 23, 10, 0), CarModel.CarBrand.MERCEDES, "E Klasse", (short)2008);
+        var offer2_d1 = createCarOffer(dealer1, "Audi A4 B9", 60000L, CarBodyType.COMBI, LocalDateTime.of(2021, 12, 31, 23, 59), CarModel.CarBrand.AUDI, "A4", (short)2008);
 
-        var offer3_d2 = createCarOffer(dealer2, "Mazda CX-9", 100000L, CarBodyType.SUV, LocalDateTime.of(2021, 10, 3, 10, 0));
-        var offer4_d2 = createCarOffer(dealer2, "Kia Sportage", 59000L, CarBodyType.SUV, LocalDateTime.of(2021, 5, 2, 10, 0));
+        var offer3_d2 = createCarOffer(dealer2, "Mazda CX-9", 100000L, CarBodyType.SUV, LocalDateTime.of(2021, 10, 3, 10, 0), CarModel.CarBrand.MAZDA, "CX-9", (short)2008);
+        var offer4_d2 = createCarOffer(dealer2, "Kia Sportage", 59000L, CarBodyType.SUV, LocalDateTime.of(2021, 5, 2, 10, 0), CarModel.CarBrand.KIA, "Sportage", (short)2008);
 
         carOffersRepository.saveAll(Arrays.asList(offer1_d1, offer2_d1, offer3_d2, offer4_d2));
+    }
+
+    void additionalTestData() {
+        var dealer3 = createDealer("dealer_3", "Katowice");
+
+        var offer1_d3 = createCarOffer(dealer3, "Porsche Cayenne 2017", 190000L, CarBodyType.SUV, LocalDateTime.of(2022, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Cayenne", (short)2017);
+        var offer2_d3 = createCarOffer(dealer3, "Porsche Cayenne 2014", 120000L, CarBodyType.SUV, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Cayenne", (short)2014);
+        var offer3_d3 = createCarOffer(dealer3, "Porsche Cayenne 2010", 80000L, CarBodyType.SUV, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Cayenne", (short)2010);
+        var offer4_d3 = createCarOffer(dealer3, "Porsche Boxter 2010", 65000L, CarBodyType.CABRIO, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Boxter", (short)2010);
+        var offer5_d3 = createCarOffer(dealer3, "Porsche Boxter 2004", 35000L, CarBodyType.CABRIO, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Boxter", (short)2004);
+
+        carOffersRepository.saveAll(Arrays.asList(offer1_d3, offer2_d3, offer3_d3, offer4_d3, offer5_d3));
     }
 
     private Dealer createDealer(String dealerName, String city) {
@@ -98,15 +156,15 @@ public class CarOffersRepositoryTest {
         return dealer;
     }
 
-    private CarOffer createCarOffer(Dealer dealer, String title, Long price, CarBodyType bodyType, LocalDateTime publishedDate) {
+    private CarOffer createCarOffer(Dealer dealer, String title, Long price, CarBodyType bodyType, LocalDateTime publishedDate, CarModel.CarBrand carBrand, String carModelName, short prodY) {
         var offer = new CarOffer();
         offer.setTitle(title);
         offer.setDesc("Stan idealny");
         offer.setCarCondition(CarCondition.SECOND_HAND);
         offer.setCarBodyType(bodyType);
-        var brand = CarModel.CarBrand.MERCEDES;
+        var brand = carBrand;
         offer.setCarBrand(brand);
-        offer.setCarModel(new CarModel("E Klasse, W211", brand));
+        offer.setCarModel(new CarModel(carModelName, brand));
         offer.setEngineCapacity((short)2000);
         offer.setDesc("Polecam, bardzo dobre auto");
         offer.setEnginePower((short)186);
@@ -114,7 +172,7 @@ public class CarOffersRepositoryTest {
         offer.setFuelType(FuelType.PETROL);
         offer.setGearboxType(GearboxType.AUTOMATIC);
         offer.setPrice(BigDecimal.valueOf(price));
-        offer.setProductionYear((short)2008);
+        offer.setProductionYear(prodY);
         offer.setPublishedDate(publishedDate);
         offer.setDealer(dealer);
         return offer;
