@@ -7,7 +7,7 @@ import pl.sda.springdemo.janusz.model.FuelType;
 import java.math.BigDecimal;
 
 @Data
-public class CarOfferTile {
+public class CarOfferTileDto {
 
     private Long offerId;
     private String title;
