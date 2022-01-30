@@ -19,4 +19,8 @@ public class CarOffersService {
         return carOffersMapper.map(carOffersRepository.findAll());
     }
 
+    public List<CarOfferTileDto> getAllByDealerId(Long dealerId) {
+        return carOffersMapper.map(carOffersRepository.findByDealer_DealerId(dealerId));
+    }
+
 }

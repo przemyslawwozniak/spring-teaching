@@ -27,8 +27,11 @@ import static pl.sda.springdemo.janusz.repository.specification.CarOfferSpecific
 @Repository
 public interface CarOffersRepository extends JpaRepository<CarOffer, Long>, JpaSpecificationExecutor<CarOffer> {
 
-    //szukaj ogloszen dla wskazanego dealera
+    //szukaj ogloszen dla wskazanego dealera po nazwie
     List<CarOffer> findByDealer_Name(String dealerName);
+
+    //szukaj ogloszen dla wskazanego dealera po dealerId
+    List<CarOffer> findByDealer_DealerId(Long dealerId);
 
     //szukaj dla podanego przedzialu cenowego i auto odpowiedniego typu (SUV etc.)
     List<CarOffer> findByCarBodyTypeAndPriceBetween(CarBodyType carBody, BigDecimal priceFrom, BigDecimal priceTo);
