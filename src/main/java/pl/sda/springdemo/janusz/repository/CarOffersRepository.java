@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
+import pl.sda.springdemo.janusz.dto.CarOfferSpecification;
 import pl.sda.springdemo.janusz.model.CarBodyType;
 import pl.sda.springdemo.janusz.model.CarModel;
 import pl.sda.springdemo.janusz.model.CarOffer;
@@ -59,6 +60,19 @@ public interface CarOffersRepository extends JpaRepository<CarOffer, Long>, JpaS
                         .and(hasFuelTypeIn(fuelTypes)
                         .and(hasCarBodyTypeIn(carBodyTypes))
                         .and(hasPriceBetween(priceLb, priceUb))))))
+        );
+    }
+
+    default List<CarOffer> findWithSpecification(CarOfferSpecification specification) {
+        return this.findAll(
+                where(titleContainsIgnoringCase(specification.getText())
+                        .and(isBrand(specification.getBrand()))
+                        .and(hasGearboxType(specification.getGearbox()))
+                        .and(hasEngineCapacityBetween(specification.getEngineCapLb(), specification.getEngineCapUb())
+                        .and(hasProductionYearBetween(specification.getProdYLb(), specification.getProdYUb())
+                        .and(hasFuelTypeIn(specification.getFuelTypes())
+                        .and(hasCarBodyTypeIn(specification.getCarBodyTypes()))
+                        .and(hasPriceBetween(specification.getPriceLb(), specification.getPriceUb()))))))
         );
     }
 

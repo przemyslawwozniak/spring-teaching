@@ -104,6 +104,7 @@ public class SpringDemoApplication implements CommandLineRunner {
 	void initJanuszData() {
 		var dealer1 = createDealer("dealer_1", "Warszawa");
 		var dealer2 = createDealer("dealer_2", "Lublin");
+		var dealer3 = createDealer("dealer_3", "Katowice");
 
 		var offer1_d1 = createCarOffer(dealer1, "MB W211", 35000L, CarBodyType.SEDAN, LocalDateTime.of(2022, 1, 23, 10, 0), CarModel.CarBrand.MERCEDES, "E Klasse", (short)2008);
 		var offer2_d1 = createCarOffer(dealer1, "Audi A4 B9", 60000L, CarBodyType.COMBI, LocalDateTime.of(2021, 12, 31, 23, 59), CarModel.CarBrand.AUDI, "A4", (short)2008);
@@ -111,19 +112,13 @@ public class SpringDemoApplication implements CommandLineRunner {
 		var offer3_d2 = createCarOffer(dealer2, "Mazda CX-9", 100000L, CarBodyType.SUV, LocalDateTime.of(2021, 10, 3, 10, 0), CarModel.CarBrand.MAZDA, "CX-9", (short)2008);
 		var offer4_d2 = createCarOffer(dealer2, "Kia Sportage", 59000L, CarBodyType.SUV, LocalDateTime.of(2021, 5, 2, 10, 0), CarModel.CarBrand.KIA, "Sportage", (short)2008);
 
-		carOffersRepository.saveAll(Arrays.asList(offer1_d1, offer2_d1, offer3_d2, offer4_d2));
-	}
-
-	void additionalTestData() {
-		var dealer3 = createDealer("dealer_3", "Katowice");
-
 		var offer1_d3 = createCarOffer(dealer3, "Porsche Cayenne 2017", 190000L, CarBodyType.SUV, LocalDateTime.of(2022, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Cayenne", (short)2017);
 		var offer2_d3 = createCarOffer(dealer3, "Porsche Cayenne 2014", 120000L, CarBodyType.SUV, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Cayenne", (short)2014);
 		var offer3_d3 = createCarOffer(dealer3, "Porsche Cayenne 2010", 80000L, CarBodyType.SUV, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Cayenne", (short)2010);
 		var offer4_d3 = createCarOffer(dealer3, "Porsche Boxter 2010", 65000L, CarBodyType.CABRIO, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Boxter", (short)2010);
 		var offer5_d3 = createCarOffer(dealer3, "Porsche Boxter 2004", 35000L, CarBodyType.CABRIO, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Boxter", (short)2004);
 
-		carOffersRepository.saveAll(Arrays.asList(offer1_d3, offer2_d3, offer3_d3, offer4_d3, offer5_d3));
+		carOffersRepository.saveAll(Arrays.asList(offer1_d1, offer2_d1, offer3_d2, offer4_d2, offer1_d3, offer2_d3, offer3_d3, offer4_d3, offer5_d3));
 	}
 
 	private Dealer createDealer(String dealerName, String city) {

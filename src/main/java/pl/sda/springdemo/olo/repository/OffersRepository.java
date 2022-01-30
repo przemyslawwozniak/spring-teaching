@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.sda.springdemo.olo.model.Offer;
-import pl.sda.springdemo.janusz.model.Offer_;
+import pl.sda.springdemo.olo.model.Offer_;
 import pl.sda.springdemo.olo.model.Subcategory;
 
 import java.math.BigDecimal;
