@@ -4,13 +4,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import pl.sda.springdemo.janusz.model.Address;
+import pl.sda.springdemo.janusz.model.CarBodyType;
+import pl.sda.springdemo.janusz.model.CarCondition;
+import pl.sda.springdemo.janusz.model.CarModel;
+import pl.sda.springdemo.janusz.model.CarOffer;
+import pl.sda.springdemo.janusz.model.ContactData;
+import pl.sda.springdemo.janusz.model.Dealer;
+import pl.sda.springdemo.janusz.model.FuelType;
+import pl.sda.springdemo.janusz.model.GearboxType;
 import pl.sda.springdemo.janusz.model.Offer;
 import pl.sda.springdemo.janusz.model.Subcategory;
+import pl.sda.springdemo.janusz.repository.CarOffersRepository;
 import pl.sda.springdemo.olo.repository.OffersRepository;
-import pl.sda.springdemo.olo.repository.SubcategoriesRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @SpringBootApplication
@@ -18,6 +28,7 @@ import java.util.Arrays;
 public class SpringDemoApplication implements CommandLineRunner {
 
 	private final OffersRepository offersRepository;
+	private final CarOffersRepository carOffersRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringDemoApplication.class, args);
@@ -25,10 +36,11 @@ public class SpringDemoApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		initializeDatabase();
+		initOloData();
+		initJanuszData();
 	}
 
-	private void initializeDatabase() {
+	private void initOloData() {
 		var computersSubcategory = Subcategory.builder()
 				.name("Computers")
 				.mainCategory(Subcategory.MainCategory.ELECTRONICS)
@@ -87,5 +99,61 @@ public class SpringDemoApplication implements CommandLineRunner {
 				.build();
 
 		offersRepository.saveAll(Arrays.asList(offer1, offer2, offer3, offer4, offer5, offer6));
+	}
+
+	void initJanuszData() {
+		var dealer1 = createDealer("dealer_1", "Warszawa");
+		var dealer2 = createDealer("dealer_2", "Lublin");
+
+		var offer1_d1 = createCarOffer(dealer1, "MB W211", 35000L, CarBodyType.SEDAN, LocalDateTime.of(2022, 1, 23, 10, 0), CarModel.CarBrand.MERCEDES, "E Klasse", (short)2008);
+		var offer2_d1 = createCarOffer(dealer1, "Audi A4 B9", 60000L, CarBodyType.COMBI, LocalDateTime.of(2021, 12, 31, 23, 59), CarModel.CarBrand.AUDI, "A4", (short)2008);
+
+		var offer3_d2 = createCarOffer(dealer2, "Mazda CX-9", 100000L, CarBodyType.SUV, LocalDateTime.of(2021, 10, 3, 10, 0), CarModel.CarBrand.MAZDA, "CX-9", (short)2008);
+		var offer4_d2 = createCarOffer(dealer2, "Kia Sportage", 59000L, CarBodyType.SUV, LocalDateTime.of(2021, 5, 2, 10, 0), CarModel.CarBrand.KIA, "Sportage", (short)2008);
+
+		carOffersRepository.saveAll(Arrays.asList(offer1_d1, offer2_d1, offer3_d2, offer4_d2));
+	}
+
+	void additionalTestData() {
+		var dealer3 = createDealer("dealer_3", "Katowice");
+
+		var offer1_d3 = createCarOffer(dealer3, "Porsche Cayenne 2017", 190000L, CarBodyType.SUV, LocalDateTime.of(2022, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Cayenne", (short)2017);
+		var offer2_d3 = createCarOffer(dealer3, "Porsche Cayenne 2014", 120000L, CarBodyType.SUV, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Cayenne", (short)2014);
+		var offer3_d3 = createCarOffer(dealer3, "Porsche Cayenne 2010", 80000L, CarBodyType.SUV, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Cayenne", (short)2010);
+		var offer4_d3 = createCarOffer(dealer3, "Porsche Boxter 2010", 65000L, CarBodyType.CABRIO, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Boxter", (short)2010);
+		var offer5_d3 = createCarOffer(dealer3, "Porsche Boxter 2004", 35000L, CarBodyType.CABRIO, LocalDateTime.of(2021, 1, 23, 10, 0), CarModel.CarBrand.PORSCHE, "Boxter", (short)2004);
+
+		carOffersRepository.saveAll(Arrays.asList(offer1_d3, offer2_d3, offer3_d3, offer4_d3, offer5_d3));
+	}
+
+	private Dealer createDealer(String dealerName, String city) {
+		var dealer = new Dealer();
+		dealer.setName(dealerName);
+		dealer.setAddress(new Address("Sezamkowa","25A",1,"01-001",city));
+		dealer.setDesc("Used car dealer");
+		dealer.setContactData(new ContactData("500-000-000","januszex@gmail.com"));
+		return dealer;
+	}
+
+	private CarOffer createCarOffer(Dealer dealer, String title, Long price, CarBodyType bodyType, LocalDateTime publishedDate, CarModel.CarBrand carBrand, String carModelName, short prodY) {
+		var offer = new CarOffer();
+		offer.setTitle(title);
+		offer.setDesc("Stan idealny");
+		offer.setCarCondition(CarCondition.SECOND_HAND);
+		offer.setCarBodyType(bodyType);
+		var brand = carBrand;
+		offer.setCarBrand(brand);
+		offer.setCarModel(new CarModel(carModelName, brand));
+		offer.setEngineCapacity((short)2000);
+		offer.setDesc("Polecam, bardzo dobre auto");
+		offer.setEnginePower((short)186);
+		offer.setCarMileageInKm(170000);
+		offer.setFuelType(FuelType.PETROL);
+		offer.setGearboxType(GearboxType.AUTOMATIC);
+		offer.setPrice(BigDecimal.valueOf(price));
+		offer.setProductionYear(prodY);
+		offer.setPublishedDate(publishedDate);
+		offer.setDealer(dealer);
+		return offer;
 	}
 }

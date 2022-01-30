@@ -1,6 +1,6 @@
 package pl.sda.springdemo.janusz.model;
 
-enum CarCondition {
+public enum CarCondition {
 
     NEW,
     SECOND_HAND,
