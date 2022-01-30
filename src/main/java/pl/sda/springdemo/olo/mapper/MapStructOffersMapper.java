@@ -5,7 +5,7 @@ import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.sda.springdemo.olo.dto.AddOfferDto;
 import pl.sda.springdemo.olo.dto.OfferDto;
-import pl.sda.springdemo.janusz.model.Offer;
+import pl.sda.springdemo.olo.model.Offer;
 import pl.sda.springdemo.olo.repository.SubcategoriesRepository;
 
 @Mapper(componentModel = "spring")

@@ -13,8 +13,8 @@ import pl.sda.springdemo.janusz.model.ContactData;
 import pl.sda.springdemo.janusz.model.Dealer;
 import pl.sda.springdemo.janusz.model.FuelType;
 import pl.sda.springdemo.janusz.model.GearboxType;
-import pl.sda.springdemo.janusz.model.Offer;
-import pl.sda.springdemo.janusz.model.Subcategory;
+import pl.sda.springdemo.olo.model.Offer;
+import pl.sda.springdemo.olo.model.Subcategory;
 import pl.sda.springdemo.janusz.repository.CarOffersRepository;
 import pl.sda.springdemo.olo.repository.OffersRepository;
 

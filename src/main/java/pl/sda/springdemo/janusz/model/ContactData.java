@@ -13,8 +13,7 @@ import javax.persistence.Embeddable;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-public
-class ContactData {
+public class ContactData {
 
     private String phone;
     private String email;

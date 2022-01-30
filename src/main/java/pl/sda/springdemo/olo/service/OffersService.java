@@ -1,8 +1,8 @@
 package pl.sda.springdemo.olo.service;
 
 import pl.sda.springdemo.olo.dto.RecentOffersQuerySpecsDto;
-import pl.sda.springdemo.janusz.model.Offer;
-import pl.sda.springdemo.janusz.model.Subcategory;
+import pl.sda.springdemo.olo.model.Offer;
+import pl.sda.springdemo.olo.model.Subcategory;
 
 import java.util.List;
 import java.util.Map;

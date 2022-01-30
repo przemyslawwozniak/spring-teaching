@@ -9,8 +9,8 @@ import pl.sda.springdemo.olo.dto.RecentOffersQuerySpecsDto;
 import pl.sda.springdemo.olo.exception.DbResourceNotFoundException;
 import pl.sda.springdemo.olo.exception.OfferNotFoundException;
 import pl.sda.springdemo.olo.exception.SubcategoryNotFoundException;
-import pl.sda.springdemo.janusz.model.Offer;
-import pl.sda.springdemo.janusz.model.Subcategory;
+import pl.sda.springdemo.olo.model.Offer;
+import pl.sda.springdemo.olo.model.Subcategory;
 import pl.sda.springdemo.olo.repository.OffersRepository;
 import pl.sda.springdemo.olo.repository.SubcategoriesRepository;
 

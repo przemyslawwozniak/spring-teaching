@@ -13,8 +13,7 @@ import javax.persistence.Embeddable;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-public
-class Address {
+public class Address {
 
     private String street;
     private String streetNo;

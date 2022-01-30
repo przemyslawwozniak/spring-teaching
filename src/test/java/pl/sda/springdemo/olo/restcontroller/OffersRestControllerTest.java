@@ -8,8 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.sda.springdemo.janusz.model.Offer;
-import pl.sda.springdemo.janusz.model.Subcategory;
+import pl.sda.springdemo.olo.model.Offer;
+import pl.sda.springdemo.olo.model.Subcategory;
 import pl.sda.springdemo.olo.service.OffersService;
 
 import java.math.BigDecimal;

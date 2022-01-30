@@ -22,7 +22,7 @@ import pl.sda.springdemo.olo.response.ErrorResponse;
 import pl.sda.springdemo.olo.response.OfferTileResponse;
 import pl.sda.springdemo.olo.dto.RecentOffersQuerySpecsDto;
 import pl.sda.springdemo.olo.mapper.OffersMapper;
-import pl.sda.springdemo.janusz.model.Offer;
+import pl.sda.springdemo.olo.model.Offer;
 import pl.sda.springdemo.olo.service.OffersService;
 
 import java.util.List;
