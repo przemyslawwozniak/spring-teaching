@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import pl.sda.springdemo.model.Offer;
-import pl.sda.springdemo.model.Subcategory;
-import pl.sda.springdemo.repository.OffersRepository;
-import pl.sda.springdemo.repository.SubcategoriesRepository;
+import pl.sda.springdemo.janusz.model.Offer;
+import pl.sda.springdemo.janusz.model.Subcategory;
+import pl.sda.springdemo.olo.repository.OffersRepository;
+import pl.sda.springdemo.olo.repository.SubcategoriesRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
