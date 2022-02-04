@@ -1,30 +1,51 @@
 package pl.sda.springdemo.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import pl.sda.springdemo.security.UserRepositoryBackedUserDetailsService;
 
 @Configuration
-public class SecurityConfig {
+@RequiredArgsConstructor
+class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public UserDetailsService inMemoryUserDetailsService() {
-        UserDetails simba = User.withDefaultPasswordEncoder()
-                .username("simba")
-                .password("pswd")
-                .roles("USER")
-                .build();
+    private final UserRepositoryBackedUserDetailsService userRepositoryBackedUserDetailsService;
 
-        UserDetails mufasa = User.withDefaultPasswordEncoder()
-                .username("mufasa")
-                .password("pswd")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(simba, mufasa);
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                //.authenticationProvider(authProvider());
+                .userDetailsService(userRepositoryBackedUserDetailsService)
+                .passwordEncoder(pswdEnc());
     }
 
+    @Bean
+    PasswordEncoder pswdEnc() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                    .antMatchers("/offers/**") //tu każdy HTTP verb (GET, POST itd.), ale można też podać konkretnie
+                        .hasRole("USER")    //dla grupy ról OR można użyć 'hasAnyRole'
+                    .antMatchers("/**").permitAll().and()    //wszystkie pozostałe - wpuszczaj. dzieki regex nie warto szczegolowo wymieniac np /users itd.
+                .httpBasic().and()  //uzywamy autoryzacji poprzez HTTP Basic
+                .csrf().disable();  //CSRF wystepuje przy operacji POST; rozwiazanie tymczasowe, później pokażę lepsze rozwiązanie
+    }
+
+    @Bean
+    DaoAuthenticationProvider authProvider() {
+        var authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userRepositoryBackedUserDetailsService);
+        authProvider.setPasswordEncoder(pswdEnc());
+        return authProvider;
+    }
 }

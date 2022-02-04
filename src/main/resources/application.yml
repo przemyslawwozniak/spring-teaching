@@ -6,3 +6,7 @@ spring:
 offers:
   page:
     size: 5
+
+#logging.level:
+#  root: INFO
+#  org.springframework.security: TRACE
