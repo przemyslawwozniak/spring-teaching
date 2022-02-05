@@ -3,6 +3,8 @@ package pl.sda.springdemo.restcontroller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.sda.springdemo.dto.AddOfferDto;
 import pl.sda.springdemo.exception.DbResourceNotFoundException;
+import pl.sda.springdemo.model.User;
 import pl.sda.springdemo.response.ErrorResponse;
 import pl.sda.springdemo.response.OfferTileResponse;
 import pl.sda.springdemo.dto.RecentOffersQuerySpecsDto;
@@ -72,7 +75,12 @@ class OffersRestController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    Offer addOffer(@RequestBody AddOfferDto offerDto) {
+    Offer addOffer(@RequestBody AddOfferDto offerDto, Authentication auth) {
+        //nadpisujemy pola AddOfferDto danymi zalogowanego uzytkownika
+        var user = (User) auth.getPrincipal();
+        offerDto.setEmail(user.getEmail()); //== auth.getName()
+        offerDto.setPhone(user.getPhone());
+
         var mappedOffer = offersMapper.mapFromAddOfferDtoToDomain(offerDto);
         return offersService.addOffer(mappedOffer);
     }
@@ -85,10 +93,12 @@ class OffersRestController {
         return offersService.addOffer(mappedOffer); //repository.save() dla wskazanego id 'podmieni' wpis w bazie dla tego id
     }
 
+    //@PostAuthorize("returnObject.email == authentication.name")   //może być bezpośrednio nad metodą kontrolera, ale tu jest problem - jaki?
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     Offer updateOffer(@RequestBody AddOfferDto offerDto, @PathVariable Long id) {
         var offerUpdate = offersMapper.mapFromAddOfferDtoToDomain(offerDto);
-        return offersService.updateOffer(offerUpdate, id);
+        var offer = offersService.getOfferByIdAndValidateUser(id);  //metoda adnotowana @xAuthorize powinna musi być wołana z poziomu kontrolera (niestety)
+        return offersService.updateOffer(offerUpdate, offer);
     }
 
     @DeleteMapping("/{id}")

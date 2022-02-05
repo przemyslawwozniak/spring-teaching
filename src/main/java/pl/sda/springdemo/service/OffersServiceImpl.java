@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 import pl.sda.springdemo.config.OffersServiceConfigurationPropertiesHolder;
 import pl.sda.springdemo.dto.RecentOffersQuerySpecsDto;
@@ -74,10 +75,19 @@ public class OffersServiceImpl implements OffersService {
     }
 
     public Offer updateOffer(Offer offerUpdate, Long id) {
+        var offer = getOfferByIdAndValidateUser(id);
+        offer.update(offerUpdate);
+        return offersRepository.save(offer);
+    }
+
+    public Offer updateOffer(Offer offerUpdate, Offer target) {
+        target.update(offerUpdate);
+        return offersRepository.save(target);
+    }
+
+    public Offer getOfferByIdAndValidateUser(Long id) {
         checkOfferExist(id);
-        var persistedOffer = offersRepository.findById(id).get();
-        persistedOffer = persistedOffer.update(offerUpdate);
-        return offersRepository.save(persistedOffer);
+        return offersRepository.findById(id).get();
     }
 
     public void deleteOffer(Long id) {
