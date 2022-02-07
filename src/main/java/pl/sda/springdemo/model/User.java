@@ -1,15 +1,19 @@
 package pl.sda.springdemo.model;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,6 +42,10 @@ public class User implements UserDetails {
     private String phone;
     private String password;
 
+    @Getter(AccessLevel.NONE)   //Lombok: do not generate getter for this field (getAuthorities ma okreslony kontrakt nizej)
+    @ElementCollection(fetch = FetchType.EAGER)  //w przeciwnym wypadku mapping exception -> https://thorben-janssen.com/hibernate-tips-elementcollection/
+    private List<String> authorities = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(name = "observes",
                joinColumns = @JoinColumn(name = "user_id"),
@@ -50,11 +58,16 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "chat_id"))
     private List<Chat> talks = new ArrayList<>();
 
-    //domyślnie null, ustawiamy podstawową rolę
+    //ta metoda to czesc kontraktu -> https://www.baeldung.com/spring-security-granted-authority-vs-role#userdetailsservice
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for(var authority : authorities) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority));
+        }
+        return grantedAuthorities;
     }
+
     //Security zakłada domyślny schemat z polem 'username', wskazujemy, co jest naszym username - tu email
     @Override
     public String getUsername() {

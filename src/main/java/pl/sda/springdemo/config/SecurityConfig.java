@@ -5,45 +5,47 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import pl.sda.springdemo.security.UserRepositoryBackedUserDetailsService;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class SecurityConfig extends WebSecurityConfigurerAdapter {
+class SecurityConfig {
 
     private final UserRepositoryBackedUserDetailsService userRepositoryBackedUserDetailsService;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                //.authenticationProvider(authProvider());
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authenticationProvider(authProvider())
                 .userDetailsService(userRepositoryBackedUserDetailsService)
-                .passwordEncoder(pswdEnc());
+                .authorizeHttpRequests((authz) -> authz
+                        .mvcMatchers(HttpMethod.POST, "/offers").hasAuthority("offers:write") //mvcMatchers wymiennie z antMatchers: https://stackoverflow.com/a/57373627/3673353
+                        .mvcMatchers(HttpMethod.PUT, "/offers/**").hasAuthority("offers:modify")
+                        .mvcMatchers(HttpMethod.PATCH, "/offers/**").hasAuthority("offers:modify")
+                        .mvcMatchers(HttpMethod.DELETE, "/offers/**").hasAuthority("offers:remove")
+                        .mvcMatchers("/**").permitAll()
+                )
+        		.httpBasic(Customizer.withDefaults())
+                //.cors(Customizer.withDefaults())    //potrzebne przy SPA, przykladowy bean ponizej
+                /*.csrf((csrf) -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) //obiecane lepsze rozwiazanie niz wylaczenie csrf
+                );*/
+                .csrf().disable();
+
+        return http.build();
     }
 
     @Bean
     PasswordEncoder pswdEnc() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/offers/**").hasRole("USER")
-                    .antMatchers(HttpMethod.PUT, "/offers/**").hasRole("USER")
-                    .antMatchers(HttpMethod.PATCH, "/offers/**").hasRole("USER")
-                    .antMatchers(HttpMethod.DELETE, "/offers/**").hasRole("USER")
-                    .antMatchers("/**").permitAll().and()    //wszystkie pozostałe - wpuszczaj. dzieki regex nie warto szczegolowo wymieniac np /users itd.
-                .httpBasic().and()  //uzywamy autoryzacji poprzez HTTP Basic
-                .csrf().disable();  //CSRF wystepuje przy operacji POST; rozwiazanie tymczasowe, później pokażę lepsze rozwiązanie
     }
 
     @Bean
@@ -53,4 +55,18 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
         authProvider.setPasswordEncoder(pswdEnc());
         return authProvider;
     }
+
+    /*  //przykladowa konfiguracja dla CORS dla SPA
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.addAllowedOrigin("http://127.0.0.1:8000");	//frontend app
+        config.addAllowedCredentials(true);
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+*/
 }
