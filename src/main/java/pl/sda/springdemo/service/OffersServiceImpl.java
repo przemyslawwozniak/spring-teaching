@@ -15,6 +15,7 @@ import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
 import pl.sda.springdemo.repository.OffersRepository;
 import pl.sda.springdemo.repository.SubcategoriesRepository;
+import pl.sda.springdemo.repository.UsersRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ public class OffersServiceImpl implements OffersService {
 
     private final SubcategoriesRepository subcategoriesRepository;
     private final OffersRepository offersRepository;
+    private final UsersRepository usersRepository;
     private final OffersServiceConfigurationPropertiesHolder propertiesHolder;  //metoda nr 2 - external bean posiada cala konfiguracje
 
     public Map<String, List<Subcategory>> getMainCategoriesDisplayNamesToSubcategoriesMap() {
@@ -71,6 +73,8 @@ public class OffersServiceImpl implements OffersService {
     }
 
     public Offer addOffer(Offer offer) {
+        var user = usersRepository.findByEmail(offer.getEmail());
+        offer.setUser(user);
         return offersRepository.save(offer);
     }
 
