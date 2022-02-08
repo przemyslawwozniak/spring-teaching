@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
 import pl.sda.springdemo.model.User;
+import pl.sda.springdemo.repository.AccessRuleRepository;
 import pl.sda.springdemo.repository.OffersRepository;
+import pl.sda.springdemo.security.AccessRule;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,10 +26,21 @@ class OloDataInitializer implements CommandLineRunner {
 
     private final OffersRepository offersRepository;
     private final PasswordEncoder pswdEnc;
+    private final AccessRuleRepository accessRuleRepository;
 
     @Override
     public void run(String... args) throws Exception {
         initializeOffers();
+        initializeAccessRules();
+    }
+
+    private void initializeAccessRules() {
+        var acr1 = new AccessRule(HttpMethod.POST, "/offers", "offers:write");
+        var acr2 = new AccessRule(HttpMethod.PUT, "/offers/**", "offers:modify");
+        var acr3 = new AccessRule(HttpMethod.PATCH, "/offers/**", "offers:modify");
+        var acr4 = new AccessRule(HttpMethod.DELETE, "/offers/**", "offers:remove");
+
+        accessRuleRepository.saveAll(Arrays.asList(acr1, acr2, acr3, acr4));
     }
 
     private void initializeOffers() {

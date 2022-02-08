@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import pl.sda.springdemo.security.AccessRuleAuthorizationManager;
 import pl.sda.springdemo.security.UserRepositoryBackedUserDetailsService;
 
 @Configuration
@@ -22,17 +23,11 @@ class SecurityConfig {
     private final UserRepositoryBackedUserDetailsService userRepositoryBackedUserDetailsService;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, AccessRuleAuthorizationManager access) throws Exception {
         http
                 .authenticationProvider(authProvider())
                 .userDetailsService(userRepositoryBackedUserDetailsService)
-                .authorizeHttpRequests((authz) -> authz
-                        .mvcMatchers(HttpMethod.POST, "/offers").hasAuthority("offers:write") //mvcMatchers wymiennie z antMatchers: https://stackoverflow.com/a/57373627/3673353
-                        .mvcMatchers(HttpMethod.PUT, "/offers/**").hasAuthority("offers:modify")
-                        .mvcMatchers(HttpMethod.PATCH, "/offers/**").hasAuthority("offers:modify")
-                        .mvcMatchers(HttpMethod.DELETE, "/offers/**").hasAuthority("offers:remove")
-                        .mvcMatchers("/**").permitAll()
-                )
+                .authorizeHttpRequests((authz) -> authz.anyRequest().access(access))
         		.httpBasic(Customizer.withDefaults())
                 //.cors(Customizer.withDefaults())    //potrzebne przy SPA, przykladowy bean ponizej
                 /*.csrf((csrf) -> csrf
