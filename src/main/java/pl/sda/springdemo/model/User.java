@@ -1,5 +1,6 @@
 package pl.sda.springdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +39,8 @@ public class User implements UserDetails {
     private String phone;
     private String password;
 
+    private String roles;   //ROLE_USER,ROLE_VERIFIED_USER
+
     @ManyToMany
     @JoinTable(name = "observes",
                joinColumns = @JoinColumn(name = "user_id"),
@@ -52,8 +55,14 @@ public class User implements UserDetails {
 
     //domyślnie null, ustawiamy podstawową rolę
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        var roles = this.roles.split(",");
+        var grantedAuthorities = new ArrayList<SimpleGrantedAuthority>();
+        for(var role : roles) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(role));
+        }
+        return grantedAuthorities;
     }
     //Security zakłada domyślny schemat z polem 'username', wskazujemy, co jest naszym username - tu email
     @Override

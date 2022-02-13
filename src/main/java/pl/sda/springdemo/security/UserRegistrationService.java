@@ -8,6 +8,8 @@ import pl.sda.springdemo.mapper.UsersMapper;
 import pl.sda.springdemo.model.User;
 import pl.sda.springdemo.repository.UsersRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserRegistrationService {
@@ -20,7 +22,12 @@ public class UserRegistrationService {
         var user = usersMapper.fromDto(userDto);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         //moglibysmy tutaj np. ustawiac role, ale nie mamy tego pola (mamy hardcoded zestaw rol dla kazdego usera)
+        user.setRoles("ROLE_USER");
         return usersRepository.save(user);
+    }
+
+    public List<User> getUsers() {
+        return usersRepository.findAll();
     }
 
 }
