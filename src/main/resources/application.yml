@@ -6,3 +6,5 @@ spring:
 offers:
   page:
     size: 2
+  restapiclient:
+    url: 'http://localhost:8080/offers/{id}'
