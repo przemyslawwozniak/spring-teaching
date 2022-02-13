@@ -1,6 +1,8 @@
 package pl.sda.springdemo.service;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
@@ -22,10 +24,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@ConfigurationProperties(prefix = "offers.page.size")   //metoda nr 1 - bean samodzielnie zarzadza konfiguracja (posiada pole z wartosciami konfiguracji)
+@ConfigurationProperties(prefix = "offers.page")   //metoda nr 1 - bean samodzielnie zarzadza konfiguracja (posiada pole z wartosciami konfiguracji)
 public class OffersServiceImpl implements OffersService {
 
-    private int pageSize = 10;  //metoda nr 1 - domyslna wartosc
+    @Getter
+    @Setter
+    private int size;  //metoda nr 1 - domyslna wartosc
 
     private final SubcategoriesRepository subcategoriesRepository;
     private final OffersRepository offersRepository;
@@ -46,7 +50,7 @@ public class OffersServiceImpl implements OffersService {
     }
 
     public List<Offer> getRecentOffers() {
-        var pageReq = PageRequest.of(0, pageSize, Sort.by("publishedDate").descending());   //metoda nr 1
+        var pageReq = PageRequest.of(0, size, Sort.by("publishedDate").descending());   //metoda nr 1
         return offersRepository.findAll(pageReq).getContent();
     }
 
