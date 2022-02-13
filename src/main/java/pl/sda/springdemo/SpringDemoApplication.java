@@ -6,8 +6,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.model.Subcategory;
+import pl.sda.springdemo.model.User;
 import pl.sda.springdemo.repository.OffersRepository;
 
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ import java.util.Arrays;
 public class SpringDemoApplication implements CommandLineRunner {
 
 	private final OffersRepository offersRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringDemoApplication.class, args);
@@ -45,6 +48,22 @@ public class SpringDemoApplication implements CommandLineRunner {
 				.mainCategory(Subcategory.MainCategory.BABY)
 				.build();
 
+		var user_admin = User.builder()
+				.email("admin@olo.pl")
+				.password(passwordEncoder.encode("pswd"))
+				.roles("ROLE_USER,ROLE_VERIFIED_USER,ROLE_ADMIN")
+				.build();
+		var user1 = User.builder()
+				.email("u1@gmail.com")
+				.password(passwordEncoder.encode("pswd"))
+				.roles("ROLE_USER")
+				.build();
+		var user2 = User.builder()
+				.email("u2@gmail.com")
+				.password(passwordEncoder.encode("pswd"))
+				.roles("ROLE_VERIFIED_USER")
+				.build();
+
 		//mamy kaskadowosc, kategorie zapisza sie wraz z zapisem ofert
 		//subcategoriesRepository.saveAll(Arrays.asList(computersSubcategory, booksSubcategory, toysSubcategory));
 
@@ -55,24 +74,28 @@ public class SpringDemoApplication implements CommandLineRunner {
 				.city("Warszawa")
 				.price(BigDecimal.valueOf(4500))
 				.publishedDate(LocalDate.of(2021, 5, 2))
+				.user(user_admin)
 				.build();
 		var offer2 = Offer.builder()
 				.title("laptop asus")
 				.subcategory(computersSubcategory)
 				.city("Lublin")
 				.price(BigDecimal.valueOf(1200))
+				.user(user1)	//zlamanie kontraktu bo on nie ma roli ktora pozwala na dodawanie ogloszen ale robie to zeby zaposic go poprzez offersRepository
 				.build();
 		var offer3 = Offer.builder()
 				.title("Książka \"Wojna w kosmosie\" Jacek Bartosiak")
 				.subcategory(booksSubcategory)
 				.city("Kraków")
 				.price(BigDecimal.valueOf(39.99))
+				.user(user2)
 				.build();
 		var offer4 = Offer.builder()
 				.title("Klocki Lego Duplo 10505 duża farma")
 				.subcategory(toysSubcategory)
 				.city("Warszawa")
 				.price(BigDecimal.valueOf(199.99))
+				.user(user2)
 				.build();
 		var offer5 = Offer.builder()
 				.title("laptop MacBook Pro 16 inch late 2019")
@@ -80,6 +103,7 @@ public class SpringDemoApplication implements CommandLineRunner {
 				.city("Warszawa")
 				.price(BigDecimal.valueOf(9700))
 				.publishedDate(LocalDate.of(2021, 5, 2))
+				.user(user_admin)
 				.build();
 		var offer6 = Offer.builder()
 				.title("laptop MacBook Air z procesorem M1")
@@ -87,6 +111,7 @@ public class SpringDemoApplication implements CommandLineRunner {
 				.city("Warszawa")
 				.price(BigDecimal.valueOf(6900))
 				.publishedDate(LocalDate.of(2021, 11, 7))
+				.user(user_admin)
 				.build();
 
 		offersRepository.saveAll(Arrays.asList(offer1, offer2, offer3, offer4, offer5, offer6));

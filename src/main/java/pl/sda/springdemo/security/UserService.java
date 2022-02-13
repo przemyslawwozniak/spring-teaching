@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserRegistrationService {
+public class UserService {
 
     private final UsersMapper usersMapper;
     private final PasswordEncoder passwordEncoder;
@@ -28,6 +28,12 @@ public class UserRegistrationService {
 
     public List<User> getUsers() {
         return usersRepository.findAll();
+    }
+
+    public User updateUserRoles(String email, String roles) {
+        var persistedUser = usersRepository.findByEmail(email);
+        persistedUser.setRoles(roles);
+        return usersRepository.save(persistedUser);
     }
 
 }
