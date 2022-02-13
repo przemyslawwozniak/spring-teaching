@@ -1,6 +1,5 @@
 package pl.sda.springdemo.service;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,9 +26,8 @@ import java.util.stream.Collectors;
 @ConfigurationProperties(prefix = "offers.page")   //metoda nr 1 - bean samodzielnie zarzadza konfiguracja (posiada pole z wartosciami konfiguracji)
 public class OffersServiceImpl implements OffersService {
 
-    @Getter
     @Setter
-    private int size;  //metoda nr 1 - domyslna wartosc
+    private int size = 3;  //metoda nr 1 - domyslna wartosc
 
     private final SubcategoriesRepository subcategoriesRepository;
     private final OffersRepository offersRepository;
