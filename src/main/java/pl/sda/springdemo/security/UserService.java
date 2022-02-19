@@ -31,6 +31,7 @@ public class UserService {
     }
 
     public User updateUserRoles(String email, String roles) {
+        //verifyUserExists
         var persistedUser = usersRepository.findByEmail(email);
         persistedUser.setRoles(roles);
         return usersRepository.save(persistedUser);

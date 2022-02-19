@@ -3,6 +3,7 @@ package pl.sda.springdemo.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,8 +35,10 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/offers/**") //tu każdy HTTP verb (GET, POST itd.), ale można też podać konkretnie
-                        .hasRole("USER")    //dla grupy ról OR można użyć 'hasAnyRole'
+                    .antMatchers(HttpMethod.POST, "/offers")
+                        .hasRole("VERIFIED_USER")
+                    .antMatchers(HttpMethod.PATCH, "/users")
+                        .hasRole("ADMIN")
                     .antMatchers("/**").permitAll().and()    //wszystkie pozostałe - wpuszczaj. dzieki regex nie warto szczegolowo wymieniac np /users itd.
                 .httpBasic().and()  //uzywamy autoryzacji poprzez HTTP Basic
                 .csrf().disable();  //CSRF wystepuje przy operacji POST; rozwiazanie tymczasowe, później pokażę lepsze rozwiązanie
