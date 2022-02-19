@@ -82,6 +82,7 @@ class OffersRestController {
         offerDto.setPhone(user.getPhone());
 
         var mappedOffer = offersMapper.mapFromAddOfferDtoToDomain(offerDto);
+        //mappedOffer.setUser(user); -> alternatywa, ale robimy to bezposrednio w mapperze wyzej
         return offersService.addOffer(mappedOffer);
     }
 

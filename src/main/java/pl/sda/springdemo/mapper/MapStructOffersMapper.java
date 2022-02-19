@@ -7,6 +7,7 @@ import pl.sda.springdemo.dto.AddOfferDto;
 import pl.sda.springdemo.dto.OfferDto;
 import pl.sda.springdemo.model.Offer;
 import pl.sda.springdemo.repository.SubcategoriesRepository;
+import pl.sda.springdemo.repository.UsersRepository;
 
 @Mapper(componentModel = "spring")
 /*
@@ -18,12 +19,15 @@ public abstract class MapStructOffersMapper implements OffersMapper {   //najczÄ
 
     @Autowired
     protected SubcategoriesRepository subcategoriesRepository;
+    @Autowired
+    protected UsersRepository usersRepository;
 
     @Mapping(target = "city", source = "localization")
     @Mapping(target = "subcategory", expression = "java( subcategoriesRepository.getById(source.getSubcategoryId()) )")   //'expression' oznacza koniecznosc wprowadzania zmian recznie + brak walidacji
     public abstract Offer mapFromDtoToDomain(OfferDto source);
 
     @Mapping(target = "subcategory", expression = "java( subcategoriesRepository.findByName(source.getSubcategoryName()) )")
+    @Mapping(target = "user", expression = "java( usersRepository.findByEmail(source.getEmail()) )")
     public abstract Offer mapFromAddOfferDtoToDomain(AddOfferDto source);
 
 }
